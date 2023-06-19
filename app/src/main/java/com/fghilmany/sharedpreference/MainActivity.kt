@@ -16,7 +16,10 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun clickEvent() {
-        binding.root.setOnClickListener {
+        binding.btSave.setOnClickListener {
+            binding.tvResult.text = "Data from SP"
+        }
+        binding.btClear.setOnClickListener {
             binding.tvResult.text = "Data from SP"
         }
     }

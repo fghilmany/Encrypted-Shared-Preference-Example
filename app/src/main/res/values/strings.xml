@@ -3,4 +3,5 @@
     <string name="input_and_save_data">Input and save data</string>
     <string name="save">Save</string>
     <string name="data_from_sp">Data From SP:</string>
+    <string name="clear">Clear</string>
 </resources>
