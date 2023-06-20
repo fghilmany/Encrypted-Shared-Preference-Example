@@ -21,7 +21,7 @@ class SharedPreferenceManager(private val context: Context) {
 
     init {
         if (prefs == null){
-            context.getSharedPreferences(sharedName, MODE_PRIVATE)
+            prefs = context.getSharedPreferences(sharedName, MODE_PRIVATE)
         }
     }
 
