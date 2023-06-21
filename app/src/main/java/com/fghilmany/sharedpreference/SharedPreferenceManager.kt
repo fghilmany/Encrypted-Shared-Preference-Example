@@ -70,7 +70,24 @@ class SharedPreferenceManager(private val context: Context) {
         edit { it.clear() }
     }
 
+    private fun SharedPreferences.copyTo(dest: SharedPreferences) {
+        for (entry in all.entries) {
+            val key = entry.key
+            val value: Any? = entry.value
+            dest.set(key, value)
+        }
+    }
+    private fun SharedPreferences.migration(prefs: SharedPreferences) {
+        this.copyTo(prefs)
+        this.clear()
+    }
 
+    fun setMigration(context: Context){
+        val nonEncryptedPreference = context.getSharedPreferences(sharedName, MODE_PRIVATE)
+        if (nonEncryptedPreference.all.isEmpty())
+            if (prefs != null)
+                nonEncryptedPreference.migration(prefs!!)
+    }
     fun setValue(key: String, value: Any?){
         prefs?.set(key, value)
     }
