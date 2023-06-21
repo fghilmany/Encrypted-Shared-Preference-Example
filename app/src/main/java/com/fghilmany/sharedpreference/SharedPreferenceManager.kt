@@ -3,7 +3,11 @@ package com.fghilmany.sharedpreference
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import android.util.Log
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 
 class SharedPreferenceManager(private val context: Context) {
 
@@ -21,7 +25,25 @@ class SharedPreferenceManager(private val context: Context) {
 
     init {
         if (prefs == null){
-            prefs = context.getSharedPreferences(sharedName, MODE_PRIVATE)
+            val spec = KeyGenParameterSpec.Builder(
+                MasterKey.DEFAULT_MASTER_KEY_ALIAS,
+                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+            )
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setKeySize(MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .build()
+            val masterKey = MasterKey.Builder(context)
+                .setKeyGenParameterSpec(spec)
+                .build()
+            prefs = EncryptedSharedPreferences
+                .create(
+                    context,
+                    sharedName,
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                )
         }
     }
 
